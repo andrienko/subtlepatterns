@@ -1,6 +1,6 @@
 {
   "name": "sbtlepatterns",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Get meta and download files from subtlepatterns.com",
   "main": "index.js",
   "author": "",
@@ -9,6 +9,9 @@
     "del": "^2.2.0",
     "download": "^4.4.3",
     "request": "^2.69.0"
+  },
+  "bin": {
+    "subtlepatterns": "bin.js"
   },
   "repository": {
     "type": "git",

@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var patterns = require('.');
 var fs = require('fs');
 
@@ -12,6 +14,14 @@ var getJson = function (filename) {
     return JSON.parse(data);
   } catch (E) {
     return {};
+  }
+};
+
+var mkdirSync = function (path) {
+  try {
+    fs.mkdirSync(path);
+  } catch(e) {
+    if ( e.code != 'EEXIST' ) throw e;
   }
 };
 
@@ -40,25 +50,27 @@ if (mode == 'help') {
   console.log('subtlepatterns download [folder] -- download all the images to the folder');
 } else if (mode == 'download') {
   var folder = args[1] || 'patterns/';
-  var compact_patterns = getJson('./patterns_compact.json');
+  var compact_patterns = getJson(folder + '/patterns_compact.json');
 
   var download = function () {
+    console.log('Downloading ' + compact_patterns.l.length + ' files to ' + folder + ' folder (may take couple minutes)');
     patterns.downloadFilesFromArray(compact_patterns.l.map(function (a) {
       return 'http://subtlepatterns.com' + a;
     }), folder, function (a, b, c) {
-      console.log('Should be done now')
+      console.log('Should be done now');
     });
-  }
+  };
 
   if (compact_patterns.l) {
     download();
   } else {
     patterns.getAllPatterns(function (data) {
       compact_patterns = build_compact_json(data);
-      fs.writeFileSync('./patterns_compact.json', JSON.stringify(compact_patterns));
+      mkdirSync(folder);
+      fs.writeFileSync(folder + '/patterns_compact.json', JSON.stringify(compact_patterns));
       download();
     }, function (page) {
-      console.log('Getting page ' + page + ' (of about 42)');
+      console.log('Getting page ' + page + ' (of about 41)');
     });
   }
 }
