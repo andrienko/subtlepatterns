@@ -1,0 +1,17 @@
+{
+  "name": "sbtlepatterns",
+  "version": "1.0.0",
+  "description": "Get meta and download files from subtlepatterns.com",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "del": "^2.2.0",
+    "download": "^4.4.3",
+    "request": "^2.69.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/andrienko/subtlepatterns"
+  }
+}
