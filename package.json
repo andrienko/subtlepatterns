@@ -1,5 +1,5 @@
 {
-  "name": "sbtlepatterns",
+  "name": "subtlepatterns",
   "version": "0.0.1",
   "description": "Get meta and download files from subtlepatterns.com",
   "main": "index.js",
