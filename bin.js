@@ -78,6 +78,6 @@ if (mode == 'help') {
 } else if (mode == 'latest') {
   patterns.getAllPatterns(function (data) {
     compact_patterns = build_compact_json(data);
-    fs.writeFileSync('./latest.json', JSON.stringify(compact_patterns, null, 2));
+    fs.writeFileSync('./latest.json', JSON.stringify(compact_patterns));
   }, progressHandler);
 }
