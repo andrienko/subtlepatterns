@@ -7,6 +7,10 @@ var args = process.argv.slice(2);
 
 var mode = 'help';
 
+var progressHandler = function (page) {
+  console.log('Getting page ' + page + ' (of about 41)');
+};
+
 var getJson = function (filename) {
   if (!fs.existsSync(filename)) return {};
   var data = fs.readFileSync(filename, 'utf-8');
@@ -20,8 +24,8 @@ var getJson = function (filename) {
 var mkdirSync = function (path) {
   try {
     fs.mkdirSync(path);
-  } catch(e) {
-    if ( e.code != 'EEXIST' ) throw e;
+  } catch (e) {
+    if (e.code != 'EEXIST') throw e;
   }
 };
 
@@ -69,8 +73,11 @@ if (mode == 'help') {
       mkdirSync(folder);
       fs.writeFileSync(folder + '/patterns_compact.json', JSON.stringify(compact_patterns));
       download();
-    }, function (page) {
-      console.log('Getting page ' + page + ' (of about 41)');
-    });
+    }, progressHandler);
   }
+} else if (mode == 'latest') {
+  patterns.getAllPatterns(function (data) {
+    compact_patterns = build_compact_json(data);
+    fs.writeFileSync('./latest.json', JSON.stringify(compact_patterns, null, 2));
+  }, progressHandler);
 }
