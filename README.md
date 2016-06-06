@@ -15,7 +15,7 @@ To use as a lib (why would you need that? Whatever...) read index.js
 
 To download the patterns (files) and build JSON with meta - install package globally via npm:
 
-    npm install -g subtlepatternrs
+    npm install -g subtlepatterns
     
 And then run
   
