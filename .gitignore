@@ -1,3 +1,4 @@
 node_modules
-./patterns/
-./patterns_compact.json
+patterns
+.idea
+package-lock.json

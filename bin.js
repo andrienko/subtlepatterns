@@ -1,83 +1,59 @@
 #!/usr/bin/env node
 
-var patterns = require('.');
-var fs = require('fs');
+const { resolve } = require("path");
+const { mkdirSync, writeFileSync } = require("fs");
 
-var args = process.argv.slice(2);
+const {
+  buildPageList,
+  downloadAllFiles,
+  collectMeta,
+  extractFiles,
+  getFolderPalette
+} = require("./lib");
 
-var mode = 'help';
+const dir = resolve(process.cwd(), "patterns");
+const arcDir = resolve(dir, "archives");
+const imgDir = resolve(dir, "images");
 
-var progressHandler = function (page) {
-  console.log('Getting page ' + page + ' (of about 41)');
-};
+const jsonFile = resolve(dir, "meta.json");
+const jsonPFile = resolve(dir, "meta.jsonp.js");
 
-var getJson = function (filename) {
-  if (!fs.existsSync(filename)) return {};
-  var data = fs.readFileSync(filename, 'utf-8');
-  try {
-    return JSON.parse(data);
-  } catch (E) {
-    return {};
-  }
-};
+try {
+  mkdirSync(dir);
+  mkdirSync(arcDir);
+  mkdirSync(imgDir);
+} catch (e) {}
 
-var mkdirSync = function (path) {
-  try {
-    fs.mkdirSync(path);
-  } catch (e) {
-    if (e.code != 'EEXIST') throw e;
-  }
-};
+if (process.argv[2] === "list") {
+  buildPageList().then(list =>
+    process.stdout.write(JSON.stringify(list, null, 2))
+  );
+} else {
+  console.log("Loading patterns information");
 
-var build_compact_json = function (patterns_json) {
-  patterns_json = patterns.filterPatternsJSON(patterns_json);
-
-  var compact_patterns = {
-    n: [],
-    l: [],
-    d: []
-  };
-  patterns_json.forEach(function (pattern) {
-    compact_patterns.n.push(pattern.name);
-    compact_patterns.l.push(pattern.link);
-    compact_patterns.d.push(pattern.description);
-  });
-  return compact_patterns;
-};
-
-
-if (args.length > 0) {
-  mode = args[0];
-}
-
-if (mode == 'help') {
-  console.log('subtlepatterns download [folder] -- download all the images to the folder');
-} else if (mode == 'download') {
-  var folder = args[1] || 'patterns/';
-  var compact_patterns = getJson(folder + '/patterns_compact.json');
-
-  var download = function () {
-    console.log('Downloading ' + compact_patterns.l.length + ' files to ' + folder + ' folder (may take couple minutes)');
-    patterns.downloadFilesFromArray(compact_patterns.l.map(function (a) {
-      return 'http://subtlepatterns.com' + a;
-    }), folder, function (a, b, c) {
-      console.log('Should be done now');
+  buildPageList().then(list => {
+    console.log(
+      "Loaded information about " +
+        list.length +
+        " patterns. Downloading zip files..."
+    );
+    downloadAllFiles(list, arcDir).then(num => {
+      console.log(`Downloaded ${num} files in ${arcDir}`);
+      collectMeta(list, arcDir).then(patterns => {
+        extractFiles(patterns, arcDir, imgDir).then(number => {
+          console.log(`Extracted ${number} files`);
+          console.log("Getting palette details");
+          getFolderPalette(imgDir, 4).then(palette => {
+            console.log("Palette received. Writing meta files");
+            const metaFile = { patterns, palette };
+            writeFileSync(jsonFile, JSON.stringify(metaFile, null, 2));
+            writeFileSync(
+              jsonPFile,
+              `initPatterns(${JSON.stringify(metaFile)});`
+            );
+          });
+        });
+      });
     });
-  };
-
-  if (compact_patterns.l) {
-    download();
-  } else {
-    patterns.getAllPatterns(function (data) {
-      compact_patterns = build_compact_json(data);
-      mkdirSync(folder);
-      fs.writeFileSync(folder + '/patterns_compact.json', JSON.stringify(compact_patterns));
-      download();
-    }, progressHandler);
-  }
-} else if (mode == 'latest') {
-  patterns.getAllPatterns(function (data) {
-    compact_patterns = build_compact_json(data);
-    fs.writeFileSync('./latest.json', JSON.stringify(compact_patterns));
-  }, progressHandler);
+  });
 }
