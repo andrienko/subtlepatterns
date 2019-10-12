@@ -1,4 +1,4 @@
-![npm install subtlepatterns](https://nodei.co/npm/subtlepatterns.png?mini=true)
+[![npm install subtlepatterns](https://nodei.co/npm/subtlepatterns.png?mini=true)](https://www.npmjs.com/package/subtlepatterns)
 
 # Subtle patterns download tool
 
