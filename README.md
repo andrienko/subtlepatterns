@@ -1,14 +1,14 @@
 ![npm install subtlepatterns](https://nodei.co/npm/subtlepatterns.png?mini=true)
 
-# Subtle patterns downloader
+# Subtle patterns download tool
 
-Just a simple lib to
+Just a simple tool that can:
 
 - get actual patterns meta in JSON format from [subtlepatterns](http://subtlepatterns.com) website
 - download the patterns, unpack them and generate meta file with files and palette information.
 
 The patterns are under **CC BY-SA 3.0** license. So play nicely and leave a credit when you use them.
-The generated meta files contain the meta from the website (author and link (if any), as long as description)
+The generated meta files contain the meta from the website (author and link (if any), as well as description)
 
 Read [FAQ](http://subtlepatterns.com/about/) at subtlepatterns.com for more.
 
