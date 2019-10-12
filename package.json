@@ -1,6 +1,6 @@
 {
   "name": "subtlepatterns",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Get meta and download all patterns from subtlepatterns.com",
   "main": "lib.js",
   "bin": {
