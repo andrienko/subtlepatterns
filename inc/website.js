@@ -28,7 +28,7 @@ const loadPageContent = (url, pageNumber) =>
     request(url.replace("%num%", pageNumber), (err, res, body) => {
       if (body) {
         const $ = cheerio.load(body);
-        const entries = $(".entry-content");
+        const entries = $(".type-post .entry-content");
         const entriesData = [];
         entries.each(function() {
           const entryData = {};
@@ -64,6 +64,15 @@ const loadPageContent = (url, pageNumber) =>
             .attr("href")
             .replace(urlCutBeginRegex, "");
 
+          const thumb = $entry.find(".patternpreview");
+          if (thumb[0]) {
+            const style = thumb.attr("style");
+            const match = style.match(/url\(\'?(.*)\'?\)/);
+            if (match) {
+              entryData.thumb = match[1].replace(urlCutBeginRegex, "");
+            }
+          }
+
           entriesData.push(entryData);
         });
         return resolve(entriesData);
@@ -98,7 +107,7 @@ const buildPageList = () =>
       const pagesAsArray = pages
         .sort((a, b) => a.pageNumber - b.pageNumber)
         .reduce((arr, item) => arr.concat(item.data), [])
-        .filter(item => !item.fileName.match(/^http/)); // Removing ads
+        .filter(item => !item.fileName.match(/^http/)); // Removing ads (when  url does not follow to patterns)
       resolve(pagesAsArray);
     })
   );

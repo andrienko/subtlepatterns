@@ -20,15 +20,12 @@ see it for usage example). The methods the lib exposes are promise-based, but th
 To download the patterns (files) and build JSON with meta - install package globally via npm 
 (`npm install -g subtlepatterns`) and run `subtlepatterns` in command line under  any directory you have write access -
  and the files should be downloaded to `patterns` directory under current working directory.
+ 
+Adding a `--colors` parameter will also download palette for the colors.
+ 
+## List
 
-Another option is running `subtlepatterns list` - it will simply skim through all the patterns pages, grab the meta
-and output it as array into stdout.
+Completely different mode is running `subtlepatterns list` - it will simply skim through all the patterns pages, grab
+the meta and output it as array into stdout.
 
 Of course, you can pipe the output via something like `subtlepatterns list > patterns.json`.
-
-## Dependencies
-
-- [cheerio](https://www.npmjs.com/package/cheerio)
-- [request](https://www.npmjs.com/package/request)
-- [color-thief](https://www.npmjs.com/package/color-thief)
-- [unzipper](https://www.npmjs.com/package/unzipper)

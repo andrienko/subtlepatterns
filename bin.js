@@ -3,6 +3,12 @@
 const { resolve } = require("path");
 const { mkdirSync, writeFileSync } = require("fs");
 
+const argv = require("minimist")(process.argv.slice(2), {
+  alias: {
+    c: "colors"
+  }
+});
+
 const {
   buildPageList,
   downloadAllFiles,
@@ -24,13 +30,16 @@ try {
   mkdirSync(imgDir);
 } catch (e) {}
 
-if (process.argv[2] === "list") {
-  buildPageList().then(list =>
-    process.stdout.write(JSON.stringify(list, null, 2))
-  );
-} else {
-  console.log("Loading patterns information");
+const writeFiles = data => {
+  writeFileSync(jsonFile, JSON.stringify(data, null, 2));
+  writeFileSync(jsonPFile, `initPatterns(${JSON.stringify(data)});`);
+};
 
+if (argv._.includes("list")) {
+  buildPageList().then(list => {
+    process.stdout.write(JSON.stringify(list, null, 2));
+  });
+} else {
   buildPageList().then(list => {
     console.log(
       "Loaded information about " +
@@ -42,16 +51,16 @@ if (process.argv[2] === "list") {
       collectMeta(list, arcDir).then(patterns => {
         extractFiles(patterns, arcDir, imgDir).then(number => {
           console.log(`Extracted ${number} files`);
-          console.log("Getting palette details");
-          getFolderPalette(imgDir, 4).then(palette => {
-            console.log("Palette received. Writing meta files");
-            const metaFile = { patterns, palette };
-            writeFileSync(jsonFile, JSON.stringify(metaFile, null, 2));
-            writeFileSync(
-              jsonPFile,
-              `initPatterns(${JSON.stringify(metaFile)});`
-            );
-          });
+
+          if (argv.colors) {
+            console.log("Getting palette details");
+            getFolderPalette(imgDir, 4).then(palette => {
+              console.log("Palette received. Writing meta files");
+              writeFiles({ patterns, palette });
+            });
+          } else {
+            writeFiles({ patterns });
+          }
         });
       });
     });

@@ -1,6 +1,6 @@
 {
   "name": "subtlepatterns",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Get meta and download all patterns from subtlepatterns.com",
   "main": "lib.js",
   "bin": {
@@ -17,6 +17,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "color-thief": "^2.2.5",
+    "minimist": "^1.2.0",
     "request": "^2.88.0",
     "unzipper": "^0.10.5"
   },

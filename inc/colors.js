@@ -13,11 +13,9 @@ const getPalette = (fileName, number = 3) =>
           "#" +
           rgb
             .map(c => {
-              let hex = c.toString(16);
-              if (hex.length === 1) {
-                hex = `0${hex}`;
-              }
-              return hex;
+              // Apparently, in color-thief, colors are 1-based o_o (1-256)
+              let hex = (c === 0 ? 1 : c - 1).toString(16);
+              return hex.length === 1 ? `0${hex}` : hex;
             })
             .join("")
       )
